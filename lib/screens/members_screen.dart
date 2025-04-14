@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../widgets/bottom_nav.dart'; // Ensure this is imported
 
 class MembersScreen extends StatelessWidget {
   final List<Map<String, String>> members = [
@@ -87,6 +88,7 @@ class MembersScreen extends StatelessWidget {
           },
         ),
       ),
+      bottomNavigationBar: BottomNav(), // Static BottomNav without animation
     );
   }
 }

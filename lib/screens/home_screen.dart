@@ -182,19 +182,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
       ),
-      bottomNavigationBar: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              Color.fromARGB(255, 2, 108, 230),
-              Color.fromARGB(255, 32, 120, 235)
-            ],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-        ),
-        child: BottomNav(),
-      ),
+      bottomNavigationBar: BottomNav(), // Static BottomNav without animation
     );
   }
 }

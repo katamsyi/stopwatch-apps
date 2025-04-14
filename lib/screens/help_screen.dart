@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../widgets/bottom_nav.dart'; // Ensure this is imported
 
 class HelpScreen extends StatelessWidget {
   @override
@@ -88,6 +89,7 @@ class HelpScreen extends StatelessWidget {
           ),
         ),
       ),
+      bottomNavigationBar: BottomNav(), // Static BottomNav
     );
   }
 }

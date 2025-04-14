@@ -15,27 +15,10 @@ class BottomNav extends StatelessWidget {
     );
   }
 
-  void _navigateWithAnimation(BuildContext context, Widget page) {
+  void _navigate(BuildContext context, Widget page) {
     Navigator.push(
       context,
-      PageRouteBuilder(
-        transitionDuration: const Duration(milliseconds: 500),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          final offsetAnimation = Tween<Offset>(
-            begin: const Offset(1.0, 0.0), // dari kanan ke kiri
-            end: Offset.zero,
-          ).animate(CurvedAnimation(
-            parent: animation,
-            curve: Curves.easeInOut,
-          ));
-
-          return SlideTransition(
-            position: offsetAnimation,
-            child: child,
-          );
-        },
-        pageBuilder: (context, animation, secondaryAnimation) => page,
-      ),
+      MaterialPageRoute(builder: (context) => page),
     );
   }
 
@@ -49,11 +32,11 @@ class BottomNav extends StatelessWidget {
       ],
       onTap: (index) {
         if (index == 0) {
-          _navigateWithAnimation(context, HomeScreen());
+          _navigate(context, HomeScreen());
         } else if (index == 1) {
-          _navigateWithAnimation(context, MembersScreen());
+          _navigate(context, MembersScreen());
         } else if (index == 2) {
-          _navigateWithAnimation(context, HelpScreen());
+          _navigate(context, HelpScreen());
         }
       },
     );
