@@ -41,24 +41,69 @@ class RecommendationScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Rekomendasi Situs")),
-      body: ListView.builder(
-        itemCount: recommendations.length,
-        itemBuilder: (context, index) {
-          final site = recommendations[index];
-          return Card(
-            margin: EdgeInsets.all(10),
-            child: ListTile(
-              leading: Image.network(site["image"]!,
-                  width: 50, height: 50, fit: BoxFit.cover),
-              title: Text(site["title"]!,
-                  style: TextStyle(fontWeight: FontWeight.bold)),
-              subtitle: Text(site["url"]!),
-              trailing: Icon(Icons.open_in_new),
-              onTap: () => _launchURL(site["url"]!),
-            ),
-          );
-        },
+      appBar: AppBar(
+        title: const Text("REKOMENDASI SITUS"),
+        centerTitle: true,
+        backgroundColor: const Color(0xFF4A90E2),
+        titleTextStyle: const TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+          letterSpacing: 1.2,
+        ),
+      ),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Color(0xFF4A90E2), Color(0xFF50E3C2)],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: ListView.builder(
+          padding: const EdgeInsets.all(16),
+          itemCount: recommendations.length,
+          itemBuilder: (context, index) {
+            final site = recommendations[index];
+            return Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+              elevation: 5,
+              margin: const EdgeInsets.symmetric(vertical: 8),
+              color: Colors.white.withOpacity(0.95),
+              child: ListTile(
+                contentPadding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                leading: ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: Image.network(
+                    site["image"]!,
+                    width: 50,
+                    height: 50,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                title: Text(
+                  site["title"]!,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                    color: Colors.black87,
+                  ),
+                ),
+                subtitle: Text(
+                  site["url"]!,
+                  style: const TextStyle(
+                    fontSize: 13,
+                    color: Colors.black54,
+                  ),
+                ),
+                trailing: const Icon(Icons.open_in_new, color: Colors.blueGrey),
+                onTap: () => _launchURL(site["url"]!),
+              ),
+            );
+          },
+        ),
       ),
     );
   }
