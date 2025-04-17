@@ -1,5 +1,8 @@
+import 'dart:async';
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class TrackingLBSScreen extends StatefulWidget {
   @override
@@ -9,6 +12,8 @@ class TrackingLBSScreen extends StatefulWidget {
 class _TrackingLBSScreenState extends State<TrackingLBSScreen> {
   String _locationMessage = "";
   bool _isValid = false;
+  double _latitude = 0.0;
+  double _longitude = 0.0;
 
   Future<void> _getCurrentLocation() async {
     bool serviceEnabled;
@@ -43,14 +48,28 @@ class _TrackingLBSScreenState extends State<TrackingLBSScreen> {
       return;
     }
 
+    // Tunggu beberapa detik sebelum mendapatkan lokasi
+    await Future.delayed(Duration(seconds: 2));
+
     Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
+        desiredAccuracy: LocationAccuracy.best); // Akurasi tertinggi
 
     setState(() {
-      _locationMessage =
-          "Latitude: ${position.latitude}\nLongitude: ${position.longitude}";
+      _latitude = position.latitude;
+      _longitude = position.longitude;
+      _locationMessage = "Latitude: ${_latitude}\nLongitude: ${_longitude}";
       _isValid = true;
     });
+  }
+
+  Future<void> _openMap(double latitude, double longitude) async {
+    final String googleMapsUrl =
+        "https://www.google.com/maps?q=$latitude,$longitude";
+    if (await canLaunch(googleMapsUrl)) {
+      await launch(googleMapsUrl);
+    } else {
+      throw 'Tidak dapat membuka Google Maps.';
+    }
   }
 
   @override
@@ -132,6 +151,23 @@ class _TrackingLBSScreenState extends State<TrackingLBSScreen> {
                     textStyle: const TextStyle(fontSize: 16),
                   ),
                 ),
+                const SizedBox(height: 20),
+                if (_isValid)
+                  ElevatedButton.icon(
+                    onPressed: () => _openMap(_latitude, _longitude),
+                    icon: const Icon(Icons.directions),
+                    label: const Text("Buka di Google Maps"),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.green,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 24, vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                      textStyle: const TextStyle(fontSize: 16),
+                    ),
+                  ),
               ],
             ),
           ),

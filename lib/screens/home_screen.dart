@@ -1,5 +1,7 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:intl/intl.dart'; // Import intl untuk format tanggal
 import 'stopwatch_screen.dart';
 import 'number_type_screen.dart';
 import 'tracking_lbs_screen.dart';
@@ -15,11 +17,14 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   String _username = "";
+  String _currentTime = ""; // Menyimpan waktu dan tanggal terkini
+  late Timer _timer; // Timer untuk memperbarui waktu
 
   @override
   void initState() {
     super.initState();
     _loadUsername();
+    _startClock(); // Memulai jam berjalan saat halaman dibuka
   }
 
   Future<void> _loadUsername() async {
@@ -27,6 +32,30 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       _username = prefs.getString("username") ?? "";
     });
+  }
+
+  // Fungsi untuk memperbarui waktu dan tanggal terkini
+  void _updateTime() {
+    DateTime now = DateTime.now();
+    String formattedTime =
+        DateFormat('EEEE, dd MMMM yyyy\nHH:mm:ss').format(now);
+    setState(() {
+      _currentTime = formattedTime; // Memperbarui waktu setiap detik
+    });
+  }
+
+  // Memulai timer untuk memperbarui waktu setiap detik
+  void _startClock() {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      _updateTime(); // Memperbarui waktu setiap detik
+    });
+  }
+
+  // Berhenti dari timer saat halaman di-dispose
+  @override
+  void dispose() {
+    _timer.cancel(); // Menghentikan timer saat halaman ditutup
+    super.dispose();
   }
 
   Future<void> _logout(BuildContext context) async {
@@ -108,17 +137,19 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               const SizedBox(height: 12),
-              const Align(
-                alignment: Alignment.centerLeft,
+              // Menampilkan waktu dan tanggal terkini yang akan diperbarui setiap detik
+              Align(
+                alignment: Alignment.center,
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 24),
                   child: Text(
-                    "Pilih fitur yang ingin kamu gunakan 👇",
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w400,
+                    _currentTime, // Waktu yang akan diperbarui setiap detik
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w600,
                       color: Colors.white,
                     ),
+                    textAlign: TextAlign.center, // Agar di tengah
                   ),
                 ),
               ),

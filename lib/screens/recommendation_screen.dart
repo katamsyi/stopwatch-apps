@@ -10,22 +10,21 @@ class RecommendationScreen extends StatelessWidget {
           "https://upload.wikimedia.org/wikipedia/commons/1/17/Google-flutter-logo.png"
     },
     {
-      "title": "Dart Programming Language",
-      "url": "https://dart.dev",
+      "title": "Google Cloud",
+      "url": "https://cloud.google.com",
       "image":
-          "https://dart.dev/assets/shared/dart/logo+text/horizontal/white-e71fb382b95004058b44c53063f92ddc6b4cc26d5aa180d4c7f80b60778827b3.svg"
-    },
-    {
-      "title": "Stack Overflow - Flutter",
-      "url": "https://stackoverflow.com/questions/tagged/flutter",
-      "image":
-          "https://upload.wikimedia.org/wikipedia/commons/e/ef/Stack_Overflow_icon.svg"
+          "assets/images/gcp.png" // Gambar lokal yang sudah Anda tempatkan di assets
     },
     {
       "title": "GitHub - Flutter Repository",
       "url": "https://github.com/flutter/flutter",
       "image":
-          "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
+          "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" // GitHub Logo
+    },
+    {
+      "title": "C++ Programming Language",
+      "url": "https://en.wikipedia.org/wiki/C%2B%2B",
+      "image": "assets/images/c++.png" // Gambar lokal
     },
   ];
 
@@ -81,6 +80,24 @@ class RecommendationScreen extends StatelessWidget {
                     width: 50,
                     height: 50,
                     fit: BoxFit.cover,
+                    loadingBuilder: (BuildContext context, Widget child,
+                        ImageChunkEvent? loadingProgress) {
+                      if (loadingProgress == null) {
+                        return child;
+                      } else {
+                        return Center(
+                          child: CircularProgressIndicator(
+                            value: loadingProgress.expectedTotalBytes != null
+                                ? loadingProgress.cumulativeBytesLoaded /
+                                    (loadingProgress.expectedTotalBytes ?? 1)
+                                : null,
+                          ),
+                        );
+                      }
+                    },
+                    errorBuilder: (context, error, stackTrace) {
+                      return Icon(Icons.error, size: 50, color: Colors.red);
+                    },
                   ),
                 ),
                 title: Text(

@@ -10,6 +10,7 @@ class StopwatchScreen extends StatefulWidget {
 class _StopwatchScreenState extends State<StopwatchScreen> {
   Stopwatch _stopwatch = Stopwatch();
   Timer? _timer;
+  List<String> _laps = []; // Menyimpan waktu lap
 
   void _startStopwatch() {
     if (!_stopwatch.isRunning) {
@@ -30,7 +31,16 @@ class _StopwatchScreenState extends State<StopwatchScreen> {
   void _resetStopwatch() {
     _stopStopwatch();
     _stopwatch.reset();
-    setState(() {});
+    setState(() {
+      _laps.clear(); // Clear lap list saat reset
+    });
+  }
+
+  void _addLap() {
+    if (_stopwatch.isRunning) {
+      _laps.add(_formatTime(_stopwatch.elapsedMilliseconds));
+      setState(() {});
+    }
   }
 
   double _calculateAngle() {
@@ -158,8 +168,49 @@ class _StopwatchScreenState extends State<StopwatchScreen> {
                       ),
                     ),
                   ),
+                  ElevatedButton.icon(
+                    onPressed: _addLap,
+                    icon: const Icon(Icons.timer),
+                    label: const Text("Lap"),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 24, vertical: 14),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                    ),
+                  ),
                 ],
-              )
+              ),
+              const SizedBox(height: 20),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: _laps.length,
+                  itemBuilder: (context, index) {
+                    return Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      elevation: 4,
+                      margin: const EdgeInsets.symmetric(vertical: 8),
+                      color: Colors.white.withOpacity(0.95),
+                      child: ListTile(
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 12),
+                        title: Text(
+                          'Lap ${index + 1}: ${_laps[index]}',
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
             ],
           ),
         ),
