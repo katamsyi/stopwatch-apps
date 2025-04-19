@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -15,10 +14,12 @@ class _TrackingLBSScreenState extends State<TrackingLBSScreen> {
   double _latitude = 0.0;
   double _longitude = 0.0;
 
+  // Fungsi untuk mendapatkan lokasi saat ini
   Future<void> _getCurrentLocation() async {
     bool serviceEnabled;
     LocationPermission permission;
 
+    // Cek apakah layanan lokasi diaktifkan
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       setState(() {
@@ -28,6 +29,7 @@ class _TrackingLBSScreenState extends State<TrackingLBSScreen> {
       return;
     }
 
+    // Cek izin lokasi
     permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
@@ -48,11 +50,9 @@ class _TrackingLBSScreenState extends State<TrackingLBSScreen> {
       return;
     }
 
-    // Tunggu beberapa detik sebelum mendapatkan lokasi
-    await Future.delayed(Duration(seconds: 2));
-
+    // Mendapatkan posisi dengan akurasi tinggi
     Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.best); // Akurasi tertinggi
+        desiredAccuracy: LocationAccuracy.best); // Akurasi terbaik
 
     setState(() {
       _latitude = position.latitude;
@@ -62,11 +62,15 @@ class _TrackingLBSScreenState extends State<TrackingLBSScreen> {
     });
   }
 
+// Fungsi untuk membuka Google Maps
   Future<void> _openMap(double latitude, double longitude) async {
     final String googleMapsUrl =
         "https://www.google.com/maps?q=$latitude,$longitude";
-    if (await canLaunch(googleMapsUrl)) {
-      await launch(googleMapsUrl);
+    final Uri googleMapsUri = Uri.parse(googleMapsUrl);
+
+    // Use launchUrl instead of canLaunch and launch methods.
+    if (await launchUrl(googleMapsUri)) {
+      // Successfully opened the map
     } else {
       throw 'Tidak dapat membuka Google Maps.';
     }

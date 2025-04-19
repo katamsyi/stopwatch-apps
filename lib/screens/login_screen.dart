@@ -12,16 +12,40 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _passwordController = TextEditingController();
 
   bool _obscurePassword = true;
+  String _errorMessage = ''; // Menyimpan pesan error jika login gagal
 
+  // Username dan password yang sudah ditentukan dalam kode
+  final String _validUsername = "admin";
+  final String _validPassword = "12345";
+
+  // Fungsi login
   void _login() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setBool("isLoggedIn", true);
-    await prefs.setString(
-        "username", _usernameController.text); // simpan nama user
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => HomeScreen()),
-    );
+    if (_usernameController.text.isEmpty || _passwordController.text.isEmpty) {
+      setState(() {
+        _errorMessage = 'Mohon Input Username dan Password Anda';
+      });
+      return;
+    }
+
+    // Cek apakah username dan password sesuai
+    if (_usernameController.text == _validUsername &&
+        _passwordController.text == _validPassword) {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setBool("isLoggedIn", true);
+      await prefs.setString(
+          "username", _usernameController.text); // simpan nama user
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => HomeScreen()),
+      );
+    } else {
+      setState(() {
+        _errorMessage = 'Username atau Password salah!';
+      });
+      // Kosongkan field jika login gagal
+      _usernameController.clear();
+      _passwordController.clear();
+    }
   }
 
   @override
@@ -90,6 +114,19 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                     ),
+                    const SizedBox(height: 16),
+                    if (_errorMessage.isNotEmpty) // Tampilkan error jika ada
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 16),
+                        child: Text(
+                          _errorMessage,
+                          style: TextStyle(
+                            color: Colors.red.shade700,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
                     const SizedBox(height: 24),
                     SizedBox(
                       width: double.infinity,
