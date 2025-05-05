@@ -28,7 +28,8 @@ class _NumberTypeScreenState extends State<NumberTypeScreen> {
       return;
     }
 
-    int? number = int.tryParse(input);
+    // Check if input is a decimal number
+    double? number = double.tryParse(input);
     if (number == null) {
       setState(() {
         _result = "Masukkan angka yang valid!";
@@ -38,6 +39,8 @@ class _NumberTypeScreenState extends State<NumberTypeScreen> {
     }
 
     List<String> properties = [];
+
+    // Check if the number is positive, negative, or zero
     if (number > 0) {
       properties.add("Positif");
     } else if (number < 0) {
@@ -46,14 +49,20 @@ class _NumberTypeScreenState extends State<NumberTypeScreen> {
       properties.add("Nol");
     }
 
-    if (number % 2 == 0) {
-      properties.add("Genap");
-    } else {
-      properties.add("Ganjil");
-    }
+    // Check if the number is an integer or decimal
+    if (number == number.toInt()) {
+      int intNumber = number.toInt();
+      if (intNumber % 2 == 0) {
+        properties.add("Genap");
+      } else {
+        properties.add("Ganjil");
+      }
 
-    if (_isPrime(number)) {
-      properties.add("Bilangan Prima");
+      if (_isPrime(intNumber)) {
+        properties.add("Bilangan Prima");
+      }
+    } else {
+      properties.add("Desimal");
     }
 
     setState(() {
@@ -91,7 +100,7 @@ class _NumberTypeScreenState extends State<NumberTypeScreen> {
               children: [
                 TextField(
                   controller: _numberController,
-                  keyboardType: TextInputType.number,
+                  keyboardType: TextInputType.numberWithOptions(decimal: true),
                   decoration: InputDecoration(
                     hintText: "Masukkan angka",
                     prefixIcon: const Icon(Icons.confirmation_number),
